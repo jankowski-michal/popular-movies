@@ -60,3 +60,6 @@ build/
 # Android Studio captures folder
 captures/
 
+#keys
+*.jks
+

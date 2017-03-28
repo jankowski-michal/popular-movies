@@ -24,16 +24,24 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     
     private MoviePoster[] mPosters;
     
-    public MoviesAdapter(@NonNull final MoviePoster[] posters, Resources res) {
+    private View.OnClickListener mOnClickListener;
+    
+    public MoviesAdapter(@NonNull final MoviePoster[] posters, Resources res, View.OnClickListener onClickListener) {
         mPosters = posters;
         mViewWidth = GridElementsDimensionUtils.getGridElementWidth(res);
         mViewHeight = GridElementsDimensionUtils.getGridElementHeight(res);
+        mOnClickListener = onClickListener;
+    }
+    
+    public MoviePoster getPoster(int position){
+        return mPosters[position];
     }
     
     @Override
     public MoviesAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         final boolean attachToRoot = false;
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_entry, parent, attachToRoot);
+        view.setOnClickListener(mOnClickListener);
         return new ViewHolder(view);
     }
     

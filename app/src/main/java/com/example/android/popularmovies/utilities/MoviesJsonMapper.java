@@ -28,8 +28,14 @@ public class MoviesJsonMapper {
         MoviePoster[] posters = new MoviePoster[resultsJsonArray.length()];
         for (int i = 0; i < resultsJsonArray.length(); i++) {
             JSONObject posterJson = resultsJsonArray.getJSONObject(i);
-            posters[i] = new MoviePoster(posterJson.getInt("id"), NetworkUtils.BASE + posterJson.getString("poster_path"));
+            posters[i] = getMoviePoster(posterJson);
         }
         return posters;
+    }
+    
+    private static MoviePoster getMoviePoster(JSONObject posterJson) throws JSONException {
+        int id = posterJson.getInt("id");
+        String posterPath = NetworkUtils.BASE_POSTER_URL + posterJson.getString("poster_path");
+        return new MoviePoster(id, posterPath);
     }
 }

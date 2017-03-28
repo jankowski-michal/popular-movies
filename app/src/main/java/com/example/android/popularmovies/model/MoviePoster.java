@@ -4,10 +4,10 @@ import android.support.annotation.Nullable;
 
 public class MoviePoster {
     
-    private int id;
+    private final int id;
     
     @Nullable
-    private String posterPath;
+    private final String posterPath;
     
     public MoviePoster(final int id, @Nullable final String posterPath) {
         this.id = id;

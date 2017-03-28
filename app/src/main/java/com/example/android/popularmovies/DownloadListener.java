@@ -4,5 +4,5 @@ import com.example.android.popularmovies.model.MoviePoster;
 
 public interface DownloadListener {
     
-    void onDownload(MoviePoster[] posters);
+    void onDownloaded(MoviePoster[] posters);
 }

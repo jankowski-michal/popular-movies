@@ -4,7 +4,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-public class ScreenOrientation {
+public class GridElementsDimensionUtils {
     
     private static final int COLUMNS_ORIENTATION_PORTRAIT = 2;
     
@@ -40,14 +40,14 @@ public class ScreenOrientation {
         }
     }
     
-    public static int getRecyclerElementWidth(Resources res) {
+    public static int getGridElementWidth(Resources res) {
         DisplayMetrics displayMetrics = res.getDisplayMetrics();
-        return Math.round(displayMetrics.widthPixels / getColumnsForOrientation(res));
+        return displayMetrics.widthPixels / getColumnsForOrientation(res);
     }
     
-    public static int getRecyclerElementHeight(Resources res) {
+    public static int getGridElementHeight(Resources res) {
         DisplayMetrics displayMetrics = res.getDisplayMetrics();
         int toolbarHeight = (TOOLBAR_HEIGHT_DP + STATUSBAR_HEIGHT_DP) * Math.round(displayMetrics.density);
-        return Math.round((displayMetrics.heightPixels - toolbarHeight) / getRowsForOrientation(res));
+        return (displayMetrics.heightPixels - toolbarHeight) / getRowsForOrientation(res);
     }
 }

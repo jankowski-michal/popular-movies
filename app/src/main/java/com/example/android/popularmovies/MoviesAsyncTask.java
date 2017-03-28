@@ -45,6 +45,6 @@ public class MoviesAsyncTask extends AsyncTask<String, Void, MoviePoster[]> {
     
     @Override
     protected void onPostExecute(final MoviePoster[] posters) {
-        mDownloadListener.onDownload(posters);
+        mDownloadListener.onDownloaded(posters);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.android.popularmovies;
 
 import com.example.android.popularmovies.model.MoviePoster;
-import com.example.android.popularmovies.utilities.ScreenOrientation;
+import com.example.android.popularmovies.utilities.GridElementsDimensionUtils;
 import com.squareup.picasso.Picasso;
 
 import android.content.res.Resources;
@@ -26,8 +26,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     
     public MoviesAdapter(@NonNull final MoviePoster[] posters, Resources res) {
         mPosters = posters;
-        mViewWidth = ScreenOrientation.getRecyclerElementWidth(res);
-        mViewHeight = ScreenOrientation.getRecyclerElementHeight(res);
+        mViewWidth = GridElementsDimensionUtils.getGridElementWidth(res);
+        mViewHeight = GridElementsDimensionUtils.getGridElementHeight(res);
     }
     
     @Override

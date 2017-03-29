@@ -1,8 +1,12 @@
 package com.example.android.popularmovies;
 
+import com.example.android.popularmovies.asynctasks.DownloadAsyncTask;
+import com.example.android.popularmovies.asynctasks.DownloadListener;
+import com.example.android.popularmovies.asynctasks.MappingAsyncTask;
+import com.example.android.popularmovies.asynctasks.MappingListener;
 import com.example.android.popularmovies.model.MoviePoster;
-import com.example.android.popularmovies.utilities.GridElementsDimensionUtils;
-import com.example.android.popularmovies.utilities.NetworkUtils;
+import com.example.android.popularmovies.utilities.ImagesDimensionUtils;
+import com.example.android.popularmovies.utilities.UrlsUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +17,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements DownloadListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements DownloadListener, View.OnClickListener, MappingListener {
     
     private RecyclerView mRecyclerView;
     
-    private MoviesAsyncTask mMoviesAsyncTask;
+    private DownloadAsyncTask mDownloadAsyncTask;
+    
+    private MappingAsyncTask mMappingAsyncTask;
     
     private MoviesAdapter mAdapter;
     
@@ -27,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements DownloadListener,
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.movies_recycler_view);
         initLayoutManager();
-        downloadPostersForm(NetworkUtils.POPULAR);
+        downloadPostersForm(UrlsUtils.POPULAR);
     }
     
     @Override
@@ -40,19 +46,19 @@ public class MainActivity extends AppCompatActivity implements DownloadListener,
     public boolean onOptionsItemSelected(final MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.order_by_popular) {
-            downloadPostersForm(NetworkUtils.POPULAR);
+            downloadPostersForm(UrlsUtils.POPULAR);
             return true;
         }
         if (itemThatWasClickedId == R.id.order_by_top_rated) {
-            downloadPostersForm(NetworkUtils.TOP_RATED);
+            downloadPostersForm(UrlsUtils.TOP_RATED);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
     
     @Override
-    public void onDownloaded(final MoviePoster[] posters) {
-        initAdapter(posters);
+    public void onDownloaded(final String responseJson) {
+        requestMappingMoviesList(responseJson);
     }
     
     @Override
@@ -62,22 +68,38 @@ public class MainActivity extends AppCompatActivity implements DownloadListener,
         startChildActivity(poster.getId() + "");
     }
     
+    @Override
+    public void onMapped(final Object object) {
+        MoviePoster[] posters = (MoviePoster[]) object;
+        initAdapter(posters);
+    }
+    
     public void startChildActivity(String movieId) {
         Intent startChildActivityIntent = new Intent(this, MovieDetailsActivity.class);
         startChildActivityIntent.putExtra(Intent.EXTRA_TEXT, movieId);
         startActivity(startChildActivityIntent);
     }
     
-    private void downloadPostersForm(String url) {
-        if (mMoviesAsyncTask != null) {
-            mMoviesAsyncTask.cancel(true);
+    private void requestMappingMoviesList(final String responseJson) {
+        if (mMappingAsyncTask != null) {
+            mMappingAsyncTask.cancel(true);
         }
-        mMoviesAsyncTask = new MoviesAsyncTask(this);
-        mMoviesAsyncTask.execute(url);
+        MappingAsyncTask.MappingRequest mappingRequest = new MappingAsyncTask.MappingRequest(responseJson, MappingAsyncTask.MAP_TO_MOVIES_LIST);
+        mMappingAsyncTask = new MappingAsyncTask(this);
+        mMappingAsyncTask.execute(mappingRequest);
+    }
+    
+    private void downloadPostersForm(String url) {
+        if (mDownloadAsyncTask != null) {
+            mDownloadAsyncTask.cancel(true);
+        }
+        mDownloadAsyncTask = new DownloadAsyncTask(this);
+        mDownloadAsyncTask.execute(url);
     }
     
     private void initLayoutManager() {
-        final GridLayoutManager layoutManager = new GridLayoutManager(this, GridElementsDimensionUtils.getColumnsForOrientation(getResources()));
+        int screenOrientation = getResources().getConfiguration().orientation;
+        final GridLayoutManager layoutManager = new GridLayoutManager(this, ImagesDimensionUtils.getColumnsForOrientation(screenOrientation));
         mRecyclerView.setLayoutManager(layoutManager);
     }
     

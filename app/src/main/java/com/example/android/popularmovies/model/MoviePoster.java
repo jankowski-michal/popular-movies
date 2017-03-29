@@ -1,17 +1,20 @@
 package com.example.android.popularmovies.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import android.support.annotation.Nullable;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MoviePoster {
     
     private final int id;
     
     @Nullable
-    private final String posterPath;
+    private final String poster_path;
     
-    public MoviePoster(final int id, @Nullable final String posterPath) {
+    public MoviePoster(final int id, @Nullable final String poster_path) {
         this.id = id;
-        this.posterPath = posterPath;
+        this.poster_path = poster_path;
     }
     
     public int getId() {
@@ -19,7 +22,7 @@ public class MoviePoster {
     }
     
     @Nullable
-    public String getPosterPath() {
-        return posterPath;
+    public String getPoster_path() {
+        return poster_path;
     }
 }

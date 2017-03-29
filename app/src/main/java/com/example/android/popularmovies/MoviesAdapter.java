@@ -1,7 +1,8 @@
 package com.example.android.popularmovies;
 
 import com.example.android.popularmovies.model.MoviePoster;
-import com.example.android.popularmovies.utilities.GridElementsDimensionUtils;
+import com.example.android.popularmovies.utilities.ImagesDimensionUtils;
+import com.example.android.popularmovies.utilities.UrlsUtils;
 import com.squareup.picasso.Picasso;
 
 import android.content.res.Resources;
@@ -28,13 +29,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     
     public MoviesAdapter(@NonNull final MoviePoster[] posters, Resources res, View.OnClickListener onClickListener) {
         mPosters = posters;
-        mViewWidth = GridElementsDimensionUtils.getGridElementWidth(res);
-        mViewHeight = GridElementsDimensionUtils.getGridElementHeight(res);
+        mViewWidth = ImagesDimensionUtils.getGridElementWidth(res);
+        mViewHeight = ImagesDimensionUtils.getGridElementHeight(res);
         mOnClickListener = onClickListener;
-    }
-    
-    public MoviePoster getPoster(int position){
-        return mPosters[position];
     }
     
     @Override
@@ -59,6 +56,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         return mPosters.length;
     }
     
+    public MoviePoster getPoster(int position) {
+        return mPosters[position];
+    }
+    
     public class ViewHolder extends RecyclerView.ViewHolder {
         
         private final ImageView mMoviePoster;
@@ -71,9 +72,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         }
         
         void setPoster(@NonNull MoviePoster poster) {
-            Log.d(TAG, "Picasso load: " + poster.getPosterPath());
+            Log.d(TAG, "Picasso load: " + poster.getPoster_path());
             Picasso.with(itemView.getContext())
-                    .load(poster.getPosterPath())
+                    .load(UrlsUtils.getPosterUrl(poster))
                     .into(mMoviePoster);
         }
     }

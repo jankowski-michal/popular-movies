@@ -11,16 +11,6 @@ import java.util.Scanner;
 
 public class NetworkUtils {
     
-    static final String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185/";
-    
-    private static final String THEMOVIEDB_API_KEY = "";
-    
-    public static final String POPULAR =
-            "https://api.themoviedb.org/3/movie/popular?page=1&language=en-US&api_key=" + THEMOVIEDB_API_KEY;
-    
-    public static final String TOP_RATED =
-            "https://api.themoviedb.org/3/movie/top_rated?page=1&language=en-US&api_key=" + THEMOVIEDB_API_KEY;
-    
     public static URL buildUrl(String url) {
         Uri build = Uri.parse(url);
         try {

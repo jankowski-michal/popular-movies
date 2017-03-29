@@ -4,7 +4,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
-public class GridElementsDimensionUtils {
+public class ImagesDimensionUtils {
     
     private static final int COLUMNS_ORIENTATION_PORTRAIT = 2;
     
@@ -16,10 +16,10 @@ public class GridElementsDimensionUtils {
     
     private static final int TOOLBAR_HEIGHT_DP = 56;
     
-    private static final int STATUSBAR_HEIGHT_DP = 24;
+    private static final int STATUS_BAR_HEIGHT_DP = 24;
     
-    public static int getColumnsForOrientation(Resources res) {
-        switch (res.getConfiguration().orientation) {
+    public static int getColumnsForOrientation(int orientation) {
+        switch (orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
                 return COLUMNS_ORIENTATION_PORTRAIT;
             case Configuration.ORIENTATION_LANDSCAPE:
@@ -29,8 +29,8 @@ public class GridElementsDimensionUtils {
         }
     }
     
-    private static int getRowsForOrientation(Resources res) {
-        switch (res.getConfiguration().orientation) {
+    private static int getRowsForOrientation(int orientation) {
+        switch (orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
                 return ROWS_ORIENTATION_PORTRAIT;
             case Configuration.ORIENTATION_LANDSCAPE:
@@ -42,12 +42,14 @@ public class GridElementsDimensionUtils {
     
     public static int getGridElementWidth(Resources res) {
         DisplayMetrics displayMetrics = res.getDisplayMetrics();
-        return displayMetrics.widthPixels / getColumnsForOrientation(res);
+        int orientation = res.getConfiguration().orientation;
+        return displayMetrics.widthPixels / getColumnsForOrientation(orientation);
     }
     
     public static int getGridElementHeight(Resources res) {
         DisplayMetrics displayMetrics = res.getDisplayMetrics();
-        int toolbarHeight = (TOOLBAR_HEIGHT_DP + STATUSBAR_HEIGHT_DP) * Math.round(displayMetrics.density);
-        return (displayMetrics.heightPixels - toolbarHeight) / getRowsForOrientation(res);
+        int toolbarHeight = (TOOLBAR_HEIGHT_DP + STATUS_BAR_HEIGHT_DP) * Math.round(displayMetrics.density);
+        int orientation = res.getConfiguration().orientation;
+        return (displayMetrics.heightPixels - toolbarHeight) / getRowsForOrientation(orientation);
     }
 }

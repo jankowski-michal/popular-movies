@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.utilities;
+package com.example.android.popularmovies.utilities.mapping;
 
 import com.example.android.popularmovies.model.MoviePoster;
 
@@ -6,9 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MoviesJsonMapper {
+public class MovieListJsonMapper {
     
-    public static MoviePoster[] getMoviesList(String objectAsJson) {
+    public static MoviePoster[] map(String objectAsJson) {
         try {
             return getPotersFromResults(objectAsJson);
         } catch (JSONException e) {
@@ -35,7 +35,7 @@ public class MoviesJsonMapper {
     
     private static MoviePoster getMoviePoster(JSONObject posterJson) throws JSONException {
         int id = posterJson.getInt("id");
-        String posterPath = NetworkUtils.BASE_POSTER_URL + posterJson.getString("poster_path");
+        String posterPath = posterJson.getString("poster_path");
         return new MoviePoster(id, posterPath);
     }
 }

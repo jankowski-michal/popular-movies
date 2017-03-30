@@ -8,4 +8,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Text" parent="AppTheme">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Text.Subheading" parent="Text">
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="Text.Title" parent="Text">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+
 </resources>

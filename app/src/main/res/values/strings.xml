@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="menu.toprated">Order by Top Rated</string>
+    <string name="menu.popular">Order by Popular</string>
+
+    <string name="movie.details.release">Release: </string>
+    <string name="movie.details.vote">Votes: </string>
+    <string name="movie.details.overview">Overview: \n</string>
+    <string name="movie.details">Movie Details</string>
 </resources>

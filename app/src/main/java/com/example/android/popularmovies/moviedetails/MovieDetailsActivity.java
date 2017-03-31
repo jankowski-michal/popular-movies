@@ -37,10 +37,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
     
     private void initView() {
-        mMovieDetailsFragment = MovieDetailsFragment.newInstance();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.contentFrame, mMovieDetailsFragment);
-        transaction.commit();
+        mMovieDetailsFragment = (MovieDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
+        if (mMovieDetailsFragment == null) {
+            mMovieDetailsFragment = MovieDetailsFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.contentFrame, mMovieDetailsFragment);
+            transaction.commit();
+        }
     }
     
     private void initPresenter() {

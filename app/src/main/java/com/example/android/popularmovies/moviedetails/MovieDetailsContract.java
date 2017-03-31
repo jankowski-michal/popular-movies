@@ -16,9 +16,16 @@ class MovieDetailsContract {
         void setReleaseDate(final String releaseDate);
         
         void setPoster(final String posterUrl);
+        
+        void showMovieDetails();
+        
+        void showLoadingScreen();
+        
+        void showErrorMessage();
     }
     
     interface Presenter extends BasePresenter {
         
+        void onRetryClick();
     }
 }

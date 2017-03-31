@@ -9,9 +9,9 @@ public class UrlsUtils {
     
     private static final String BASE_MOVIE_DETAILS_URL = "https://api.themoviedb.org/3/movie/";
     
-    private static final String THEMOVIEDB_API_KEY = "";
+    private static final String THE_MOVIEDB_API_KEY = "";
     
-    private static final String BASE_QUERY = "?language=en-US&api_key=" + THEMOVIEDB_API_KEY;
+    private static final String BASE_QUERY = "?language=en-US&api_key=" + THE_MOVIEDB_API_KEY;
     
     public static final String POPULAR = BASE_MOVIE_DETAILS_URL + "popular?page=1" + BASE_QUERY;
     

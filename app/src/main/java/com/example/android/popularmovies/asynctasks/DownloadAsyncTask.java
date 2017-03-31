@@ -13,7 +13,7 @@ public class DownloadAsyncTask extends AsyncTask<String, Void, String> {
     
     private static final String TAG = DownloadAsyncTask.class.getSimpleName();
     
-    private DownloadListener mDownloadListener;
+    private final DownloadListener mDownloadListener;
     
     public DownloadAsyncTask(final DownloadListener downloadListener) {
         mDownloadListener = downloadListener;
@@ -35,8 +35,8 @@ public class DownloadAsyncTask extends AsyncTask<String, Void, String> {
             return getResponseFromHttpUrl(url);
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
     
     @Override

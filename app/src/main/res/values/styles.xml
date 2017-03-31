@@ -12,14 +12,18 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">true</item>
     </style>
-
-    <style name="Text.Subheading" parent="Text">
-        <item name="android:textSize">17sp</item>
+    <style name="SelectableItemTheme">
+        <item name="colorControlHighlight">?attr/colorAccent</item>
     </style>
 
-    <style name="Text.Title" parent="Text">
-        <item name="android:textSize">20sp</item>
-    </style>
 
+    <style name="CardView.Poster">
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="cardElevation">@dimen/cardview_elevation</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="android:theme">@style/SelectableItemTheme</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
 
 </resources>

@@ -3,8 +3,10 @@
     <string name="menu.toprated">Order by Top Rated</string>
     <string name="menu.popular">Order by Popular</string>
 
-    <string name="movie.details.release">Release: </string>
-    <string name="movie.details.vote">Votes: </string>
-    <string name="movie.details.overview">Overview: \n</string>
+    <string name="movie.details.release">Release:&#160;</string>
+    <string name="movie.details.vote">Votes:&#160;</string>
+    <string name="movie.details.overview">Overview:</string>
     <string name="movie.details">Movie Details</string>
+    <string name="downloading_data_message">Loading data</string>
+    <string name="error_message">Something went wrong.\nTap on screen to retry data load.</string>
 </resources>

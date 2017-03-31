@@ -11,9 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-//todo: verify differences between fragment and v4 app fragment
 
 public class MovieDetailsFragment extends Fragment implements MovieDetailsContract.View {
     
@@ -27,6 +26,12 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsContra
     
     private ImageView mThumbnail;
     
+    private LinearLayout mLoadingScreen;
+    
+    private LinearLayout mErrorScreen;
+    
+    private LinearLayout mMovieDetailsScreen;
+    
     private MovieDetailsContract.Presenter mPresenter;
     
     public MovieDetailsFragment() {
@@ -38,6 +43,7 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsContra
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.movie_details_fragment, container, false);
         initViews(root);
+        showLoadingScreen();
         return root;
     }
     
@@ -53,8 +59,7 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsContra
     
     @Override
     public void setOverview(final String overview) {
-        String overviewAppended = getString(R.string.movie_details_overview) + overview;
-        mOverviewTextView.setText(overviewAppended);
+        mOverviewTextView.setText(overview);
     }
     
     @Override
@@ -76,8 +81,39 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsContra
                 .into(mThumbnail);
     }
     
+    @Override
+    public void showMovieDetails() {
+        mErrorScreen.setVisibility(View.GONE);
+        mLoadingScreen.setVisibility(View.GONE);
+        mMovieDetailsScreen.setVisibility(View.VISIBLE);
+    }
+    
+    @Override
+    public void showLoadingScreen() {
+        mErrorScreen.setVisibility(View.GONE);
+        mMovieDetailsScreen.setVisibility(View.GONE);
+        mLoadingScreen.setVisibility(View.VISIBLE);
+    }
+    
+    @Override
+    public void showErrorMessage() {
+        mLoadingScreen.setVisibility(View.GONE);
+        mMovieDetailsScreen.setVisibility(View.GONE);
+        mErrorScreen.setVisibility(View.VISIBLE);
+        initOnRetryClick();
+    }
+    
     public static MovieDetailsFragment newInstance() {
         return new MovieDetailsFragment();
+    }
+    
+    private void initOnRetryClick() {
+        mErrorScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mPresenter.onRetryClick();
+            }
+        });
     }
     
     private void initViews(View root) {
@@ -86,5 +122,8 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsContra
         mReleaseDateTextView = (TextView) root.findViewById(R.id.release_date);
         mOverviewTextView = (TextView) root.findViewById(R.id.overview);
         mThumbnail = (ImageView) root.findViewById(R.id.poster_thumbnail);
+        mLoadingScreen = (LinearLayout) root.findViewById(R.id.loading_data_layout);
+        mErrorScreen = (LinearLayout) root.findViewById(R.id.error_layout);
+        mMovieDetailsScreen = (LinearLayout) root.findViewById(R.id.movie_details_screen);
     }
 }

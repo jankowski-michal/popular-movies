@@ -7,10 +7,14 @@ import android.support.annotation.Nullable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MoviePoster {
     
-    private final int id;
+    private int id;
     
     @Nullable
-    private final String poster_path;
+    private String poster_path;
+    
+    public MoviePoster() {
+        
+    }
     
     public MoviePoster(final int id, @Nullable final String poster_path) {
         this.id = id;

@@ -17,7 +17,7 @@ public class UrlsUtils {
     
     public static final String TOP_RATED = BASE_MOVIE_DETAILS_URL + "top_rated?page=1" + BASE_QUERY;
     
-    public static String getMovieDetailsUrl(int movieId) {
+    public static String getMovieDetailsUrl(String movieId) {
         return BASE_MOVIE_DETAILS_URL + movieId + BASE_QUERY;
     }
     

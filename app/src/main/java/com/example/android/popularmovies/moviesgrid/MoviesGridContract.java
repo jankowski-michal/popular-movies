@@ -4,7 +4,6 @@ import com.example.android.popularmovies.BasePresenter;
 import com.example.android.popularmovies.BaseView;
 import com.example.android.popularmovies.model.MoviePoster;
 
-import android.content.res.Resources;
 import android.view.MenuItem;
 
 class MoviesGridContract {
@@ -17,9 +16,11 @@ class MoviesGridContract {
         
         void showMovieDetails(final String movieId);
         
-        MoviePoster getPoster(int position);
+        void showLoadingScreen();
         
-        Resources getResporces();
+        void showErrorMessage();
+        
+        MoviePoster getPoster(int position);
     }
     
     interface Presenter extends BasePresenter, android.view.View.OnClickListener {
@@ -27,5 +28,7 @@ class MoviesGridContract {
         boolean isDataMissing();
         
         boolean onOptionsItemSelected(final MenuItem item);
+        
+        void onRetryClick();
     }
 }

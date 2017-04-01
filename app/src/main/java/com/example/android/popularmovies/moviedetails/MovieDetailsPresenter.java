@@ -7,12 +7,11 @@ import com.example.android.popularmovies.asynctasks.MappingListener;
 import com.example.android.popularmovies.model.MovieDetails;
 import com.example.android.popularmovies.utilities.UrlsUtils;
 
-
 public class MovieDetailsPresenter implements MovieDetailsContract.Presenter, DownloadListener, MappingListener {
     
     private final String mMovieId;
     
-    private final MovieDetailsContract.View mView; //todo: should be final
+    private final MovieDetailsContract.View mView;
     
     private DownloadAsyncTask mDownloadAsyncTask;
     
@@ -25,7 +24,7 @@ public class MovieDetailsPresenter implements MovieDetailsContract.Presenter, Do
     
     @Override
     public void start() {
-        downloadMovieDetails(mMovieId);
+        downloadMovieDetails();
     }
     
     @Override
@@ -36,7 +35,20 @@ public class MovieDetailsPresenter implements MovieDetailsContract.Presenter, Do
     @Override
     public void onMapped(final Object object) {
         MovieDetails movieDetails = (MovieDetails) object;
-        
+        if (movieDetails == null) {
+            mView.showErrorMessage();
+        } else {
+            displayMovieDetails(movieDetails);
+        }
+    }
+    
+    @Override
+    public void onRetryClick() {
+        downloadMovieDetails();
+        mView.showLoadingScreen();
+    }
+    
+    private void displayMovieDetails(final MovieDetails movieDetails) {
         String posterUrl = UrlsUtils.getPosterUrl(movieDetails);
         
         mView.setTitle(movieDetails.getTitle());
@@ -44,23 +56,25 @@ public class MovieDetailsPresenter implements MovieDetailsContract.Presenter, Do
         mView.setVote(movieDetails.getVote_average());
         mView.setOverview(movieDetails.getOverview());
         mView.setPoster(posterUrl);
+        
+        mView.showMovieDetails();
     }
     
     private void requestMappingMovieDetails(final String responseJson) {
         if (mMappingAsyncTask != null) {
             mMappingAsyncTask.cancel(true);
         }
-        MappingAsyncTask.MappingRequest mappingRequest = new MappingAsyncTask.MappingRequest(responseJson, MappingAsyncTask.MAP_TO_MOVIE_DETAILS);
+        MappingAsyncTask.MappingRequest mappingRequest = MappingAsyncTask.MappingRequest.movieDetailsRequest(responseJson);
         mMappingAsyncTask = new MappingAsyncTask(this);
         mMappingAsyncTask.execute(mappingRequest);
     }
     
-    private void downloadMovieDetails(String movieId) {
+    private void downloadMovieDetails() {
         if (mDownloadAsyncTask != null) {
             mDownloadAsyncTask.cancel(true);
         }
         mDownloadAsyncTask = new DownloadAsyncTask(this);
-        String url = UrlsUtils.getMovieDetailsUrl(movieId);
+        String url = UrlsUtils.getMovieDetailsUrl(mMovieId);
         mDownloadAsyncTask.execute(url);
     }
 }

@@ -15,6 +15,8 @@ class MoviesGridPresenter implements MoviesGridContract.Presenter, DownloadListe
     
     private final MoviesGridContract.View mView;
     
+    private String mDownloadUrl;
+    
     private DownloadAsyncTask mDownloadAsyncTask;
     
     private MappingAsyncTask mMappingAsyncTask;
@@ -29,15 +31,20 @@ class MoviesGridPresenter implements MoviesGridContract.Presenter, DownloadListe
     @Override
     public void start() {
         if (mIsDataMissing) {
-            downloadPostersFrom(UrlsUtils.POPULAR);
+            mDownloadUrl = UrlsUtils.POPULAR;
+            downloadPosters();
         }
     }
     
     @Override
     public void onMapped(final Object object) {
         MoviePoster[] posters = (MoviePoster[]) object;
-        setPosters(posters);
-        mIsDataMissing = false;
+        if (posters == null || posters.length == 0) {
+            mView.showErrorMessage();
+        } else {
+            setPosters(posters);
+            mIsDataMissing = false;
+        }
     }
     
     @Override
@@ -62,14 +69,24 @@ class MoviesGridPresenter implements MoviesGridContract.Presenter, DownloadListe
     public boolean onOptionsItemSelected(final MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.order_by_popular) {
-            downloadPostersFrom(UrlsUtils.POPULAR);
+            mDownloadUrl = UrlsUtils.POPULAR;
+            downloadPosters();
+            mView.showLoadingScreen();
             return true;
         }
         if (itemThatWasClickedId == R.id.order_by_top_rated) {
-            downloadPostersFrom(UrlsUtils.TOP_RATED);
+            mDownloadUrl = UrlsUtils.TOP_RATED;
+            downloadPosters();
+            mView.showLoadingScreen();
             return true;
         }
         return false;
+    }
+    
+    @Override
+    public void onRetryClick() {
+        downloadPosters();
+        mView.showLoadingScreen();
     }
     
     private void setPosters(final MoviePoster[] posters) {
@@ -80,16 +97,16 @@ class MoviesGridPresenter implements MoviesGridContract.Presenter, DownloadListe
         if (mMappingAsyncTask != null) {
             mMappingAsyncTask.cancel(true);
         }
-        MappingAsyncTask.MappingRequest mappingRequest = new MappingAsyncTask.MappingRequest(responseJson, MappingAsyncTask.MAP_TO_MOVIES_LIST);
+        MappingAsyncTask.MappingRequest mappingRequest = MappingAsyncTask.MappingRequest.moviesListRequest(responseJson);
         mMappingAsyncTask = new MappingAsyncTask(this);
         mMappingAsyncTask.execute(mappingRequest);
     }
     
-    private void downloadPostersFrom(String url) {
+    private void downloadPosters() {
         if (mDownloadAsyncTask != null) {
             mDownloadAsyncTask.cancel(true);
         }
         mDownloadAsyncTask = new DownloadAsyncTask(this);
-        mDownloadAsyncTask.execute(url);
+        mDownloadAsyncTask.execute(mDownloadUrl);
     }
 }

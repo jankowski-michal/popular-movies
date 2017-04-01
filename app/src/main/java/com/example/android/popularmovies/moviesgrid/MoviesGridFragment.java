@@ -9,11 +9,11 @@ import com.squareup.picasso.Picasso;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,6 +33,10 @@ public class MoviesGridFragment extends Fragment implements MoviesGridContract.V
     
     private MoviesGridContract.Presenter mPresenter;
     
+    private LinearLayout mLoadingScreen;
+    
+    private LinearLayout mErrorScreen;
+    
     public MoviesGridFragment() {
         // Required empty public constructor
     }
@@ -42,6 +46,9 @@ public class MoviesGridFragment extends Fragment implements MoviesGridContract.V
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.movies_grid_fragment, container, false);
         mRecyclerView = (RecyclerView) root.findViewById(R.id.movies_recycler_view);
+        mLoadingScreen = (LinearLayout) root.findViewById(R.id.loading_data_layout);
+        mErrorScreen = (LinearLayout) root.findViewById(R.id.error_layout);
+        showLoadingScreen();
         return root;
     }
     
@@ -62,6 +69,10 @@ public class MoviesGridFragment extends Fragment implements MoviesGridContract.V
     
     @Override
     public void setPosters(final MoviePoster[] posters) {
+        mErrorScreen.setVisibility(View.GONE);
+        mLoadingScreen.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        
         initLayoutManager();
         mAdapter = new MoviesGridAdapter(posters);
         mRecyclerView.setAdapter(mAdapter);
@@ -76,13 +87,23 @@ public class MoviesGridFragment extends Fragment implements MoviesGridContract.V
     }
     
     @Override
-    public MoviePoster getPoster(final int position) {
-        return mAdapter.getPoster(position);
+    public void showLoadingScreen() {
+        mErrorScreen.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+        mLoadingScreen.setVisibility(View.VISIBLE);
     }
     
     @Override
-    public Resources getResporces() {
-        return getResources();
+    public void showErrorMessage() {
+        mLoadingScreen.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+        mErrorScreen.setVisibility(View.VISIBLE);
+        initOnRetryClick();
+    }
+    
+    @Override
+    public MoviePoster getPoster(final int position) {
+        return mAdapter.getPoster(position);
     }
     
     public static MoviesGridFragment newInstance() {
@@ -90,9 +111,18 @@ public class MoviesGridFragment extends Fragment implements MoviesGridContract.V
     }
     
     public void initLayoutManager() {
-        int screenOrientation = getResporces().getConfiguration().orientation;
+        int screenOrientation = getResources().getConfiguration().orientation;
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), ImagesDimensionUtils.getColumnsForOrientation(screenOrientation));
         mRecyclerView.setLayoutManager(layoutManager);
+    }
+    
+    private void initOnRetryClick() {
+        mErrorScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mPresenter.onRetryClick();
+            }
+        });
     }
     
     private class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.ViewHolder> {
@@ -104,7 +134,7 @@ public class MoviesGridFragment extends Fragment implements MoviesGridContract.V
         private final MoviePoster[] mPosters;
         
         MoviesGridAdapter(@NonNull final MoviePoster[] posters) {
-            mPosters = posters; //todo: check not null - creashes when key is wrong
+            mPosters = posters;
             mViewWidth = ImagesDimensionUtils.getGridElementWidth(getContext());
             mViewHeight = ImagesDimensionUtils.getGridElementHeight(getContext());
         }
@@ -113,7 +143,8 @@ public class MoviesGridFragment extends Fragment implements MoviesGridContract.V
         public MoviesGridAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
             final boolean attachToRoot = false;
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_entry, parent, attachToRoot);
-            view.setOnClickListener(mPresenter);
+            CardView thumbnailCard = (CardView) view.findViewById(R.id.thumbnail_card);
+            thumbnailCard.setOnClickListener(mPresenter);
             return new ViewHolder(view);
         }
         
@@ -131,7 +162,7 @@ public class MoviesGridFragment extends Fragment implements MoviesGridContract.V
             return mPosters.length;
         }
         
-        public MoviePoster getPoster(int position) {
+        MoviePoster getPoster(int position) {
             return mPosters[position];
         }
         

@@ -8,13 +8,13 @@ import android.util.Log;
 
 public class MappingAsyncTask extends AsyncTask<MappingAsyncTask.MappingRequest, Void, Object> {
     
-    public static final int MAP_TO_MOVIES_LIST = 0;
+    private static final int MAP_TO_MOVIES_LIST = 0;
     
-    public static final int MAP_TO_MOVIE_DETAILS = 1;
+    private static final int MAP_TO_MOVIE_DETAILS = 1;
     
     private static final String TAG = MappingAsyncTask.class.getSimpleName();
     
-    private MappingListener mMapperListener;
+    private final MappingListener mMapperListener;
     
     public MappingAsyncTask(final MappingListener mapperListener) {
         mMapperListener = mapperListener;
@@ -50,19 +50,27 @@ public class MappingAsyncTask extends AsyncTask<MappingAsyncTask.MappingRequest,
             case MAP_TO_MOVIE_DETAILS:
                 return MovieDetailsJsonMapper.map(mappingRequest.responseJson);
             default:
-                return null;
+                throw new IllegalArgumentException("mappingRequest.MAP_TO is incorrect");
         }
     }
     
     public static class MappingRequest {
         
-        private String responseJson;
+        private final String responseJson;
         
-        private int MAP_TO;
+        private final int MAP_TO;
         
-        public MappingRequest(final String responseJson, final int MAP_TO) {
+        private MappingRequest(final String responseJson, final int MAP_TO) {
             this.responseJson = responseJson;
             this.MAP_TO = MAP_TO;
+        }
+        
+        public static MappingRequest moviesListRequest(final String responseJson) {
+            return new MappingRequest(responseJson, MAP_TO_MOVIES_LIST);
+        }
+        
+        public static MappingRequest movieDetailsRequest(final String responseJson) {
+            return new MappingRequest(responseJson, MAP_TO_MOVIE_DETAILS);
         }
     }
 }

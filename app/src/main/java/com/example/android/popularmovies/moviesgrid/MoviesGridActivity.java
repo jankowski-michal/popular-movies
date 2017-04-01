@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 public class MoviesGridActivity extends AppCompatActivity {
     
-    //todo: we should also remember what kind of order
     public static final String IS_MISSING_DATA = "IS_MISSING_DATA";
     
     private MoviesGridContract.Presenter mPresenter;

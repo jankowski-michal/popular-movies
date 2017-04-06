@@ -2,7 +2,7 @@ package com.example.android.popularmovies.moviesgrid;
 
 import com.example.android.popularmovies.BasePresenter;
 import com.example.android.popularmovies.BaseView;
-import com.example.android.popularmovies.model.MoviePoster;
+import com.example.android.popularmovies.moviesgrid.domain.entities.MoviePoster;
 
 import android.view.MenuItem;
 
@@ -25,10 +25,10 @@ class MoviesGridContract {
     
     interface Presenter extends BasePresenter, android.view.View.OnClickListener {
         
-        boolean isDataMissing();
-        
         boolean onOptionsItemSelected(final MenuItem item);
         
         void onRetryClick();
+        
+        void stop();
     }
 }

@@ -12,8 +12,16 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">true</item>
     </style>
+
     <style name="SelectableItemTheme">
         <item name="colorControlHighlight">?attr/colorAccent</item>
+    </style>
+
+    <style name="MovieTrailer">
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:theme">@style/SelectableItemTheme</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
 

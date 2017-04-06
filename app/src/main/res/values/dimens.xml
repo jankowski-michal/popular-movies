@@ -5,4 +5,7 @@
     <dimen name="recycler_view_padding">2dp</dimen>
     <dimen name="thumbnail_width">135dp</dimen>
     <dimen name="thumbnail_height">200dp</dimen>
+    <dimen name="thumbnail_width_sw600dp">200dp</dimen>
+    <dimen name="thumbnail_height_sw600dp">300dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
 </resources>

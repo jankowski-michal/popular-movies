@@ -13,6 +13,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     
     private MovieDetailsFragment mMovieDetailsFragment;
     
+   
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +49,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
     
     private void initPresenter() {
-        mPresenter = new MovieDetailsPresenter(mMovieDetailsFragment, getMovieId());
+        mPresenter = new MovieDetailsPresenter(mMovieDetailsFragment, getMovieId(), this);
         mMovieDetailsFragment.setPresenter(mPresenter);
         mPresenter.start();
     }
@@ -58,5 +60,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
             return intent.getStringExtra(Intent.EXTRA_TEXT);
         }
         return null;
+    }
+    
+    @Override
+    protected void onDestroy() {
+        mPresenter.stop();
+        super.onDestroy();
     }
 }

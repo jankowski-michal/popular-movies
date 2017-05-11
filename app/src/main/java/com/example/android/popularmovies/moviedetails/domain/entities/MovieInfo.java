@@ -1,9 +1,11 @@
-package com.example.android.popularmovies.model;
+package com.example.android.popularmovies.moviedetails.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MovieDetails {
+public class MovieInfo {
+    
+    String id;
     
     String title;
     
@@ -13,7 +15,17 @@ public class MovieDetails {
     
     String release_date;
     
+    boolean is_favourite;
+    
     float vote_average;
+    
+    public String getId() {
+        return id;
+    }
+    
+    public void setId(final String id) {
+        this.id = id;
+    }
     
     public String getTitle() {
         return title;
@@ -53,5 +65,13 @@ public class MovieDetails {
     
     public void setVote_average(final float vote_average) {
         this.vote_average = vote_average;
+    }
+    
+    public boolean isFavourite() {
+        return is_favourite;
+    }
+    
+    public void setFavourite(final boolean is_favourite) {
+        this.is_favourite = is_favourite;
     }
 }

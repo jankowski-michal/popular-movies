@@ -10,8 +10,6 @@ import android.view.MenuItem;
 
 public class MoviesGridActivity extends AppCompatActivity {
     
-    public static final String IS_MISSING_DATA = "IS_MISSING_DATA";
-    
     private MoviesGridContract.Presenter mPresenter;
     
     private MoviesGridFragment mMoviesGridFragment;
@@ -21,18 +19,6 @@ public class MoviesGridActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movies_grid_activity);
         
-        boolean isMissingData = true;
-        
-        /*
-        * After Device Orientation Changed list is always downloaded again.
-        * This is because application is not storing movies list in stage 1 project.
-        * Proper handling of re-downloading data will be implemented in stage 2.
-        *
-        * if (savedInstanceState != null) {
-        *     isMissingData = savedInstanceState.getBoolean(IS_MISSING_DATA);
-        * }
-        * */
-        
         mMoviesGridFragment = (MoviesGridFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
         if (mMoviesGridFragment == null) {
             mMoviesGridFragment = MoviesGridFragment.newInstance();
@@ -41,7 +27,7 @@ public class MoviesGridActivity extends AppCompatActivity {
             transaction.commit();
         }
         
-        mPresenter = new MoviesGridPresenter(mMoviesGridFragment, isMissingData);
+        mPresenter = new MoviesGridPresenter(mMoviesGridFragment, this);
         mMoviesGridFragment.setPresenter(mPresenter);
         mPresenter.start();
     }
@@ -53,13 +39,13 @@ public class MoviesGridActivity extends AppCompatActivity {
     }
     
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(IS_MISSING_DATA, mPresenter.isDataMissing());
-        super.onSaveInstanceState(outState);
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        return mPresenter.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
     
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        return mPresenter.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    protected void onDestroy() {
+        mPresenter.stop();
+        super.onDestroy();
     }
 }

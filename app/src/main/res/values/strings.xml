@@ -2,6 +2,7 @@
     <string name="app_name">Popular Movies</string>
     <string name="menu.toprated">Order by Top Rated</string>
     <string name="menu.popular">Order by Popular</string>
+    <string name="menu.favourites">Favourites</string>
 
     <string name="movie.details.release">Release:&#160;</string>
     <string name="movie.details.vote">Votes:&#160;</string>
@@ -9,4 +10,8 @@
     <string name="movie.details">Movie Details</string>
     <string name="downloading_data_message">Loading data</string>
     <string name="error_message">Something went wrong.\nTap on screen to retry data load.</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Review:</string>
+    <string name="no_trailers_message">This movie has no trailers</string>
+    <string name="no_reviews_message">This movie has no reviews</string>
 </resources>

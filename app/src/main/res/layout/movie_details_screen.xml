@@ -5,21 +5,21 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+    <android.support.v4.widget.SwipeRefreshLayout android:id="@+id/swipe_container"
+                                                  xmlns:android="http://schemas.android.com/apk/res/android"
+                                                  android:layout_width="match_parent"
+                                                  android:layout_height="match_parent">
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/default_margin">
-            <LinearLayout
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_margin="@dimen/default_margin">
 
                 <android.support.v7.widget.CardView android:id="@+id/thumbnail_card"
                                                     style="@style/CardView.Poster"
@@ -28,62 +28,108 @@
                                                     android:layout_height="@dimen/thumbnail_height"
                                                     android:clickable="false">
 
-                    <LinearLayout
+                    <ImageView
+                        android:id="@+id/poster_thumbnail"
                         android:layout_width="@dimen/thumbnail_width"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/poster_thumbnail"
-                            android:layout_width="@dimen/thumbnail_width"
-                            android:layout_height="@dimen/thumbnail_height"
-                            android:scaleType="fitXY" />
-                    </LinearLayout>
+                        android:layout_height="@dimen/thumbnail_height"
+                        android:scaleType="fitXY" />
 
                 </android.support.v7.widget.CardView>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/movie_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/default_margin">
+                    android:layout_marginLeft="@dimen/default_margin"
+                    android:layout_toRightOf="@id/thumbnail_card"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
-                    <TextView
-                        android:id="@+id/movie_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+                <TextView
+                    android:id="@+id/vote_average"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/movie_title"
+                    android:layout_marginLeft="@dimen/default_margin"
+                    android:layout_toRightOf="@id/thumbnail_card"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
-                    <TextView
-                        android:id="@+id/vote_average"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:id="@+id/release_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/vote_average"
+                    android:layout_marginLeft="@dimen/default_margin"
+                    android:layout_toRightOf="@id/thumbnail_card"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
-                    <TextView
-                        android:id="@+id/release_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/favourite_button"
+                    android:layout_width="@dimen/fab_size"
+                    android:layout_height="@dimen/fab_size"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/release_date"
+                    android:layout_margin="@dimen/default_margin"
+                    android:src="@drawable/favourite" />
 
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/overview_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/thumbnail_card"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:layout_marginTop="@dimen/default_margin"
+                    android:text="@string/movie.details.overview"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/overview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/overview_title"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin"
-                android:text="@string/movie.details.overview"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/trailers"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_below="@id/overview"
+                    android:layout_marginBottom="@dimen/default_margin" />
 
-            <TextView
-                android:id="@+id/overview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                <TextView
+                    android:id="@+id/no_trailers_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/overview"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:gravity="center"
+                    android:text="@string/no_trailers_message"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:visibility="gone" />
 
-        </LinearLayout>
-    </ScrollView>
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_below="@id/trailers"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:clipChildren="true" />
+
+                <TextView
+                    android:id="@+id/no_reviews_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/trailers"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:gravity="center"
+                    android:text="@string/no_reviews_message"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+ur
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

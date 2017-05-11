@@ -2,8 +2,10 @@ package com.example.android.popularmovies.moviedetails;
 
 import com.example.android.popularmovies.BasePresenter;
 import com.example.android.popularmovies.BaseView;
+import com.example.android.popularmovies.moviedetails.domain.entities.Review;
+import com.example.android.popularmovies.moviedetails.domain.entities.Trailer;
 
-class MovieDetailsContract {
+public class MovieDetailsContract {
     
     interface View extends BaseView<Presenter> {
         
@@ -22,10 +24,30 @@ class MovieDetailsContract {
         void showLoadingScreen();
         
         void showErrorMessage();
+        
+        void showReviews(Review[] reviews);
+        
+        void showTrailers(Trailer[] trailers);
+        
+        void setFavourite(boolean isFavourite);
+        
+        void setEmptyTrailers();
+        
+        void setEmptyReviews();
+        
+        void dismissRefresh();
     }
     
-    interface Presenter extends BasePresenter {
+    public interface Presenter extends BasePresenter {
+        
+        void stop();
         
         void onRetryClick();
+        
+        void onTrailerClick(Trailer trailer);
+        
+        void onFavouriteClick();
+        
+        void onRefreshPull();
     }
 }

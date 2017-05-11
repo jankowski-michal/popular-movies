@@ -1,12 +1,19 @@
 package com.example.android.popularmovies.moviedetails;
 
 import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.moviedetails.domain.entities.Review;
+import com.example.android.popularmovies.moviedetails.domain.entities.Trailer;
+import com.example.android.popularmovies.moviedetails.view.ReviewAdapter;
+import com.example.android.popularmovies.moviedetails.view.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +41,22 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsContra
     
     private MovieDetailsContract.Presenter mPresenter;
     
+    private ViewPager mReviewsViewPager;
+    
+    private ViewPager mTrailersViewPager;
+    
+    private ReviewAdapter mReviewAdapter;
+    
+    private TrailerAdapter mTrailerAdapter;
+    
+    private FloatingActionButton mFavouriteButton;
+    
+    private SwipeRefreshLayout mSwipeContainer;
+    
+    private View noReviewsMessage, noTrailersMessage;
+    
+    private boolean favourite;
+    
     public MovieDetailsFragment() {
         // Required empty public constructor
     }
@@ -43,8 +66,32 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsContra
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.movie_details_fragment, container, false);
         initViews(root);
+        mReviewsViewPager = (ViewPager) root.findViewById(R.id.reviews);
+        mTrailersViewPager = (ViewPager) root.findViewById(R.id.trailers);
+        mFavouriteButton = (FloatingActionButton) root.findViewById(R.id.favourite_button);
+        mSwipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipe_container);
+        noReviewsMessage = root.findViewById(R.id.no_reviews_message);
+        noTrailersMessage = root.findViewById(R.id.no_trailers_message);
+        mFavouriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mPresenter.onFavouriteClick();
+            }
+        });
+        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.onRefreshPull();
+            }
+        });
         showLoadingScreen();
         return root;
+    }
+    
+    @Override
+    public void onViewCreated(final View view, @Nullable final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setFavourite(favourite);
     }
     
     @Override
@@ -101,6 +148,48 @@ public class MovieDetailsFragment extends Fragment implements MovieDetailsContra
         mMovieDetailsScreen.setVisibility(View.GONE);
         mErrorScreen.setVisibility(View.VISIBLE);
         initOnRetryClick();
+    }
+    
+    public void showReviews(Review[] reviews) {
+        noReviewsMessage.setVisibility(View.GONE);
+        mReviewAdapter = new ReviewAdapter(reviews, getContext());
+        mReviewsViewPager.setAdapter(mReviewAdapter);
+    }
+    
+    public void showTrailers(Trailer[] trailers) {
+        noTrailersMessage.setVisibility(View.GONE);
+        mTrailerAdapter = new TrailerAdapter(trailers, getContext(), mPresenter);
+        mTrailersViewPager.setAdapter(mTrailerAdapter);
+    }
+    
+    @Override
+    public void setFavourite(final boolean setToFavourite) {
+        favourite = setToFavourite;
+        if (mFavouriteButton == null) {
+            return;
+        }
+        if (setToFavourite) {
+            mFavouriteButton.setImageResource(R.drawable.favourite);
+        } else {
+            mFavouriteButton.setImageResource(R.drawable.notfavourite);
+        }
+    }
+    
+    @Override
+    public void setEmptyTrailers() {
+        noTrailersMessage.setVisibility(View.VISIBLE);
+        mTrailersViewPager.setVisibility(View.GONE);
+    }
+    
+    @Override
+    public void setEmptyReviews() {
+        noReviewsMessage.setVisibility(View.VISIBLE);
+        mReviewsViewPager.setVisibility(View.GONE);
+    }
+    
+    @Override
+    public void dismissRefresh() {
+        mSwipeContainer.setRefreshing(false);
     }
     
     public static MovieDetailsFragment newInstance() {

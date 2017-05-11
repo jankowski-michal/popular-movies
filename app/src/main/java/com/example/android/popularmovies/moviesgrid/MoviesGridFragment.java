@@ -1,8 +1,8 @@
 package com.example.android.popularmovies.moviesgrid;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.model.MoviePoster;
 import com.example.android.popularmovies.moviedetails.MovieDetailsActivity;
+import com.example.android.popularmovies.moviesgrid.domain.entities.MoviePoster;
 import com.example.android.popularmovies.utilities.ImagesDimensionUtils;
 import com.example.android.popularmovies.utilities.UrlsUtils;
 import com.squareup.picasso.Picasso;

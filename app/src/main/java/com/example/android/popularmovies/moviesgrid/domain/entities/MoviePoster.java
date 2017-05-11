@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.model;
+package com.example.android.popularmovies.moviesgrid.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,5 +28,13 @@ public class MoviePoster {
     @Nullable
     public String getPoster_path() {
         return poster_path;
+    }
+    
+    public void setId(final int id) {
+        this.id = id;
+    }
+    
+    public void setPoster_path(@Nullable final String poster_path) {
+        this.poster_path = poster_path;
     }
 }

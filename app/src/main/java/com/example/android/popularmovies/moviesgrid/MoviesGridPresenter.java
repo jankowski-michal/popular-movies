@@ -1,55 +1,44 @@
 package com.example.android.popularmovies.moviesgrid;
 
 import com.example.android.popularmovies.R;
-import com.example.android.popularmovies.asynctasks.DownloadAsyncTask;
-import com.example.android.popularmovies.asynctasks.DownloadListener;
-import com.example.android.popularmovies.asynctasks.MappingAsyncTask;
-import com.example.android.popularmovies.asynctasks.MappingListener;
-import com.example.android.popularmovies.model.MoviePoster;
+import com.example.android.popularmovies.moviesgrid.domain.GetMoviePosters;
+import com.example.android.popularmovies.moviesgrid.domain.entities.MoviePoster;
 import com.example.android.popularmovies.utilities.UrlsUtils;
 
+import android.content.Context;
 import android.view.MenuItem;
 import android.view.View;
 
-class MoviesGridPresenter implements MoviesGridContract.Presenter, DownloadListener, MappingListener {
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+
+class MoviesGridPresenter implements MoviesGridContract.Presenter {
     
     private final MoviesGridContract.View mView;
     
+    private Context mContext;
+    
+    private GetMoviePosters mUseCase;
+    
     private String mDownloadUrl;
     
-    private DownloadAsyncTask mDownloadAsyncTask;
+    private PostersObserver mObserver = new PostersObserver();
     
-    private MappingAsyncTask mMappingAsyncTask;
+    private CompositeDisposable mDisposable = new CompositeDisposable();
     
-    private boolean mIsDataMissing;
-    
-    MoviesGridPresenter(MoviesGridFragment view, boolean isDataMissing) {
+    MoviesGridPresenter(MoviesGridFragment view, Context context) {
         mView = view;
-        mIsDataMissing = isDataMissing;
+        mContext = context;
+        mUseCase = new GetMoviePosters(mContext);
     }
     
     @Override
     public void start() {
-        if (mIsDataMissing) {
-            mDownloadUrl = UrlsUtils.POPULAR;
-            downloadPosters();
-        }
-    }
-    
-    @Override
-    public void onMapped(final Object object) {
-        MoviePoster[] posters = (MoviePoster[]) object;
-        if (posters == null || posters.length == 0) {
-            mView.showErrorMessage();
-        } else {
-            setPosters(posters);
-            mIsDataMissing = false;
-        }
-    }
-    
-    @Override
-    public void onDownloaded(final String responseJson) {
-        requestMappingMoviesList(responseJson);
+        mDownloadUrl = UrlsUtils.POPULAR;
+        download();
     }
     
     @Override
@@ -61,23 +50,23 @@ class MoviesGridPresenter implements MoviesGridContract.Presenter, DownloadListe
     }
     
     @Override
-    public boolean isDataMissing() {
-        return mIsDataMissing;
-    }
-    
-    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.order_by_popular) {
             mDownloadUrl = UrlsUtils.POPULAR;
-            downloadPosters();
             mView.showLoadingScreen();
+            download();
             return true;
         }
         if (itemThatWasClickedId == R.id.order_by_top_rated) {
             mDownloadUrl = UrlsUtils.TOP_RATED;
-            downloadPosters();
             mView.showLoadingScreen();
+            download();
+            return true;
+        }
+        if (itemThatWasClickedId == R.id.favourites) {
+            mView.showLoadingScreen();
+            showFavourites();
             return true;
         }
         return false;
@@ -85,28 +74,50 @@ class MoviesGridPresenter implements MoviesGridContract.Presenter, DownloadListe
     
     @Override
     public void onRetryClick() {
-        downloadPosters();
+        download();
         mView.showLoadingScreen();
+    }
+    
+    @Override
+    public void stop() {
+        mDisposable.clear();
+        
     }
     
     private void setPosters(final MoviePoster[] posters) {
         mView.setPosters(posters);
     }
     
-    private void requestMappingMoviesList(final String responseJson) {
-        if (mMappingAsyncTask != null) {
-            mMappingAsyncTask.cancel(true);
+    private void download() {
+        Single<MoviePoster[]> mObservable;
+        if (mDownloadUrl.equals(UrlsUtils.TOP_RATED)) {
+            mUseCase.getTopRated(0).subscribe(mObserver);
+        } else {
+            mUseCase.getPopular(0).subscribe(mObserver);
         }
-        MappingAsyncTask.MappingRequest mappingRequest = MappingAsyncTask.MappingRequest.moviesListRequest(responseJson);
-        mMappingAsyncTask = new MappingAsyncTask(this);
-        mMappingAsyncTask.execute(mappingRequest);
     }
     
-    private void downloadPosters() {
-        if (mDownloadAsyncTask != null) {
-            mDownloadAsyncTask.cancel(true);
+    private void showFavourites() {
+        Single<MoviePoster[]> mObservable = mUseCase.getFavourite();
+        mObservable.subscribe(mObserver);
+    }
+    
+    private class PostersObserver implements SingleObserver<MoviePoster[]> {
+        
+        @Override
+        public void onSubscribe(@NonNull final Disposable d) {
+            mDisposable.add(d);
         }
-        mDownloadAsyncTask = new DownloadAsyncTask(this);
-        mDownloadAsyncTask.execute(mDownloadUrl);
+        
+        @Override
+        public void onSuccess(@NonNull final MoviePoster[] moviePosters) {
+            setPosters(moviePosters);
+        }
+        
+        @Override
+        public void onError(Throwable e) {
+            mView.showErrorMessage();
+            e.printStackTrace();
+        }
     }
 }
